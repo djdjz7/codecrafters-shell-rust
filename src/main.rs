@@ -13,7 +13,8 @@ fn main() {
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
         let input = input.trim();
-        match input {
+        let query = input.split_whitespace().collect::<Vec<&str>>();
+        match query[0] {
             "exit" => exit(0),
             _ => println!("{}: command not found", input),
         }
