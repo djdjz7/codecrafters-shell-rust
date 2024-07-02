@@ -27,6 +27,7 @@ fn handle_input(command: &str, args: Vec<&str>) {
 
             let builtin_commands = ["exit", "echo", "type"];
             if builtin_commands.contains(&args[0]) {
+                flag = true;
                 println!("{} is a shell builtin", &args[0]);
             } else {
                 let full_path = env::var("PATH").unwrap();
