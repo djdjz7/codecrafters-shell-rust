@@ -33,16 +33,21 @@ fn handle_input(command: &str, args: Vec<&str>) {
             println!("{}", current_dir.display());
         }
         "cd" => {
-            let current_dir = env::current_dir().unwrap();
-            let after = current_dir.join(args.join(" "));
-            match env::set_current_dir(&after.as_path()) {
-                Ok(()) => {}
-                Err(e) => match e.kind() {
-                    io::ErrorKind::NotFound => {
-                        println!("cd: {}: No such file or directory", args.join(" "))
-                    }
-                    _ => {}
-                },
+            if args[0] == "~" {
+                let home_dir = env::var("HOME").unwrap();
+                env::set_current_dir(&home_dir).unwrap();
+            } else {
+                let current_dir = env::current_dir().unwrap();
+                let after = current_dir.join(args.join(" "));
+                match env::set_current_dir(&after.as_path()) {
+                    Ok(()) => {}
+                    Err(e) => match e.kind() {
+                        io::ErrorKind::NotFound => {
+                            println!("cd: {}: No such file or directory", args.join(" "))
+                        }
+                        _ => {}
+                    },
+                }
             }
         }
         "type" => {
