@@ -48,7 +48,8 @@ fn handle_input(command: &str, args: Vec<&str>) {
         }
         _ => match search_command_in_paths(command) {
             Some(path) => {
-                Command::new(&path).args(args).spawn().unwrap();
+                let output = Command::new(&path).args(args).output().unwrap();
+                io::stdout().write_all(&output.stdout).unwrap();
             }
             None => println!("{}: not found", command),
         },
