@@ -24,7 +24,7 @@ fn handle_input(command: &str, args: Vec<&str>) {
         "echo" => println!("{}", args.join(" ")),
         "type" => {
             let builtin_commands = ["exit","echo","type"];
-            if builtin_commands.contains(&command) {
+            if builtin_commands.contains(&args[1]) {
                 println!("{} is a shell builtin", command);
             }
             else {
