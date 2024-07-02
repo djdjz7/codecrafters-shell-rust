@@ -13,8 +13,8 @@ fn main() {
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
         let input = input.trim();
-        let query = input.split_whitespace().collect::<Vec<&str>>();
-        handle_input(query[0], query[1..].to_vec());
+        let command_vec = input.split_whitespace().collect::<Vec<&str>>();
+        handle_input(command_vec[0], command_vec[1..].to_vec());
     }
 }
 
@@ -25,10 +25,10 @@ fn handle_input(command: &str, args: Vec<&str>) {
         "type" => {
             let builtin_commands = ["exit","echo","type"];
             if builtin_commands.contains(&args[0]) {
-                println!("{} is a shell builtin", command);
+                println!("{} is a shell builtin", &args[0]);
             }
             else {
-                println!("{}: not found", command)
+                println!("{}: not found", &args[0])
             }
         }
         _ => println!("{}: command not found", command),
