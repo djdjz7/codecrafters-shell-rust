@@ -32,7 +32,7 @@ fn handle_input(command: &str, args: Vec<&str>) {
         "type" => {
             let mut flag = false;
 
-            let builtin_commands = ["exit", "echo", "type"];
+            let builtin_commands = ["exit", "echo", "type", "pwd"];
             if builtin_commands.contains(&args[0]) {
                 flag = true;
                 println!("{} is a shell builtin", &args[0]);
