@@ -1,6 +1,9 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
-use std::{env, path, process::exit};
+use std::{
+    env, path,
+    process::{exit, Command},
+};
 
 fn main() {
     loop {
@@ -30,16 +33,12 @@ fn handle_input(command: &str, args: Vec<&str>) {
                 flag = true;
                 println!("{} is a shell builtin", &args[0]);
             } else {
-                let full_path = env::var("PATH").unwrap();
-                let paths = full_path.split(":");
-                for path in paths {
-                    let file_path = format!("{}/{}", path, args[0]);
-                    let dir_path = path::Path::new(&file_path);
-                    if dir_path.exists() {
-                        println!("{} is {}", &args[0], dir_path.display());
+                match search_command_in_paths(&args[0]) {
+                    Some(path) => {
                         flag = true;
-                        break;
+                        println!("{} is {}", &args[0], &path);
                     }
+                    None => {}
                 }
             }
 
@@ -47,6 +46,24 @@ fn handle_input(command: &str, args: Vec<&str>) {
                 println!("{}: not found", &args[0])
             }
         }
-        _ => println!("{}: command not found", command),
+        _ => match search_command_in_paths(command) {
+            Some(path) => {
+                Command::new(&path).spawn().unwrap();
+            }
+            None => println!("{}: not found", command),
+        },
     }
+}
+
+fn search_command_in_paths(command: &str) -> Option<String> {
+    let full_path = env::var("PATH").unwrap();
+    let paths = full_path.split(":");
+    for path in paths {
+        let file_path = format!("{}/{}", path, command);
+        let dir_path = path::Path::new(&file_path);
+        if dir_path.exists() {
+            return Some(file_path);
+        }
+    }
+    return None;
 }
