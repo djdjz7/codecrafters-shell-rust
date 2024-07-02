@@ -36,10 +36,7 @@ fn handle_input(command: &str, args: Vec<&str>) {
             let current_dir = env::current_dir().unwrap();
             let after = current_dir.join(args.join(" "));
             match env::set_current_dir(&after.as_path()) {
-                Ok(()) => {
-                    let current_dir = env::current_dir().unwrap();
-                    println!("{}", current_dir.display());
-                }
+                Ok(()) => {}
                 Err(e) => match e.kind() {
                     io::ErrorKind::NotFound => {
                         println!("cd: {}: No such file or directory", args.join(" "))
