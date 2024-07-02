@@ -16,6 +16,7 @@ fn main() {
         let query = input.split_whitespace().collect::<Vec<&str>>();
         match query[0] {
             "exit" => exit(0),
+            "echo" => print!("{}", query[1..].join(" ")),
             _ => println!("{}: command not found", input),
         }
     }
