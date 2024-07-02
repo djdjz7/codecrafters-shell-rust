@@ -1,9 +1,12 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::{
-    env, path::PathBuf,
-    process::{exit, Command}
+    env,
+    path::PathBuf,
+    process::{exit, Command},
 };
+
+use anyhow::Error;
 
 const BUILTIN_COMMANDS: [&str; 5] = ["exit", "echo", "type", "pwd", "cd"];
 
@@ -31,13 +34,21 @@ fn handle_input(command: &str, args: Vec<&str>) {
             let current_dir = env::current_dir().unwrap();
             println!("{}", current_dir.display());
         }
-        "cd"=> {
+        "cd" => {
             let current_dir = env::current_dir().unwrap();
             let after = current_dir.join(args.join(" "));
-            env::set_current_dir(&after.as_path()).unwrap();
-            
-            let current_dir = env::current_dir().unwrap();
-            println!("{}", current_dir.display());
+            match env::set_current_dir(&after.as_path()) {
+                Ok(()) => {
+                    let current_dir = env::current_dir().unwrap();
+                    println!("{}", current_dir.display());
+                }
+                Err(e) => match e.kind() {
+                    io::ErrorKind::NotFound => {
+                        println!("cd: {}: No such file or directory", args.join(" "))
+                    }
+                    _ => {}
+                },
+            }
         }
         "type" => {
             let mut flag = false;
