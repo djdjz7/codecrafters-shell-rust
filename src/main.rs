@@ -6,8 +6,6 @@ use std::{
     process::{exit, Command},
 };
 
-use anyhow::Error;
-
 const BUILTIN_COMMANDS: [&str; 5] = ["exit", "echo", "type", "pwd", "cd"];
 
 fn main() {
