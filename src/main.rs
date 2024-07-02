@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::{
-    env, path,
+    env, path::PathBuf,
     process::{exit, Command},
 };
 
@@ -25,6 +25,10 @@ fn handle_input(command: &str, args: Vec<&str>) {
     match command {
         "exit" => exit(0),
         "echo" => println!("{}", args.join(" ")),
+        "pwd" => {
+            let current_dir = env::current_dir().unwrap();
+            println!("{}", current_dir.display());
+        }
         "type" => {
             let mut flag = false;
 
@@ -36,12 +40,11 @@ fn handle_input(command: &str, args: Vec<&str>) {
                 match search_command_in_paths(&args[0]) {
                     Some(path) => {
                         flag = true;
-                        println!("{} is {}", &args[0], &path);
+                        println!("{} is {}", &args[0], &path.display());
                     }
                     None => {}
                 }
             }
-
             if !flag {
                 println!("{}: not found", &args[0])
             }
@@ -56,13 +59,12 @@ fn handle_input(command: &str, args: Vec<&str>) {
     }
 }
 
-fn search_command_in_paths(command: &str) -> Option<String> {
+fn search_command_in_paths(command: &str) -> Option<PathBuf> {
     let full_path = env::var("PATH").unwrap();
-    let paths = full_path.split(":");
+    let paths = env::split_paths(&full_path);
     for path in paths {
-        let file_path = format!("{}/{}", path, command);
-        let dir_path = path::Path::new(&file_path);
-        if dir_path.exists() {
+        let file_path = path.join(command);
+        if file_path.exists() {
             return Some(file_path);
         }
     }
