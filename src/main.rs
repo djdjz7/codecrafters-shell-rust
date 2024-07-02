@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
-use std::{env, process::exit, path};
+use std::{env, path, process::exit};
 
 fn main() {
     loop {
@@ -25,9 +25,10 @@ fn handle_input(command: &str, args: Vec<&str>) {
         "type" => {
             let full_path = env::var("PATH").unwrap();
             let paths = full_path.split(":");
-            let mut flag= false;
+            let mut flag = false;
+
             for path in paths {
-                let file_path = format!("{} {}", path, args[0]);
+                let file_path = format!("{}/{}", path, args[0]);
                 let dir_path = path::Path::new(&file_path);
                 if dir_path.exists() {
                     flag = true;
