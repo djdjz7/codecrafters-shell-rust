@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
-use std::process::exit;
+use std::{env, process::exit, path, fmt};
 
 fn main() {
     loop {
@@ -23,11 +23,20 @@ fn handle_input(command: &str, args: Vec<&str>) {
         "exit" => exit(0),
         "echo" => println!("{}", args.join(" ")),
         "type" => {
-            let builtin_commands = ["exit","echo","type"];
-            if builtin_commands.contains(&args[0]) {
-                println!("{} is a shell builtin", &args[0]);
+            let full_path = env::var("PATH").unwrap();
+            let paths = full_path.split(":");
+            let mut flag= false;
+            for path in paths {
+                let file_path = format!("{} {}", path, args[0]);
+                let dir_path = path::Path::new(&file_path);
+                if dir_path.exists() {
+                    flag = true;
+                    println!("{} is {}", &args[0], dir_path.display());
+                    break;
+                }
             }
-            else {
+
+            if !flag {
                 println!("{}: not found", &args[0])
             }
         }
