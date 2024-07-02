@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
-use std::{env, process::exit, path, fmt};
+use std::{env, process::exit, path};
 
 fn main() {
     loop {
