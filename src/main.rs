@@ -2,8 +2,10 @@
 use std::io::{self, Write};
 use std::{
     env, path::PathBuf,
-    process::{exit, Command},
+    process::{exit, Command}
 };
+
+const BUILTIN_COMMANDS: [&str; 5] = ["exit", "echo", "type", "pwd", "cd"];
 
 fn main() {
     loop {
@@ -29,11 +31,18 @@ fn handle_input(command: &str, args: Vec<&str>) {
             let current_dir = env::current_dir().unwrap();
             println!("{}", current_dir.display());
         }
+        "cd"=> {
+            let current_dir = env::current_dir().unwrap();
+            let after = current_dir.join(args.join(" "));
+            env::set_current_dir(&after.as_path()).unwrap();
+            
+            let current_dir = env::current_dir().unwrap();
+            println!("{}", current_dir.display());
+        }
         "type" => {
             let mut flag = false;
 
-            let builtin_commands = ["exit", "echo", "type", "pwd"];
-            if builtin_commands.contains(&args[0]) {
+            if BUILTIN_COMMANDS.contains(&args[0]) {
                 flag = true;
                 println!("{} is a shell builtin", &args[0]);
             } else {
