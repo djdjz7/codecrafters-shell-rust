@@ -14,10 +14,23 @@ fn main() {
         stdin.read_line(&mut input).unwrap();
         let input = input.trim();
         let query = input.split_whitespace().collect::<Vec<&str>>();
-        match query[0] {
-            "exit" => exit(0),
-            "echo" => println!("{}", query[1..].join(" ")),
-            _ => println!("{}: command not found", input),
+        handle_input(query[0], query[1..].to_vec());
+    }
+}
+
+fn handle_input(command: &str, args: Vec<&str>) {
+    match command {
+        "exit" => exit(0),
+        "echo" => println!("{}", args.join(" ")),
+        "type" => {
+            let builtin_commands = ["exit","echo","type"];
+            if builtin_commands.contains(&command) {
+                println!("{} is a shell builtin", command);
+            }
+            else {
+                println!("{}: not found", command)
+            }
         }
+        _ => println!("{}: command not found", command),
     }
 }
